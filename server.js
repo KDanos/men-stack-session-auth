@@ -4,7 +4,7 @@ import morgan from 'morgan';
 import methodOverride from 'method-override';
 import mongoose from 'mongoose';
 
-import User from './model/user.js'
+import authRouter from './controllers/auth.js'
 
 //Create the app
 const app = express();
@@ -16,9 +16,16 @@ app.use(methodOverride('_method'));
 app.use(express.static('public'));
 
 //Routes
-app.get ('/', (req, res) => {
+app.get ('/', async (req, res) => {
     res.render('index.ejs')
 })
+
+
+//1. Request hits our server, passes through the middleware and gets to this line
+//2. At this point, because we used app.use(...) it ignores the HTTP verb (GET, POST)
+//3. It simply checks wheteher the path of the request starts with '/auth'
+//4. If it does, it checks whether the router has any matching routes apended to it
+app.use('/auth', authRouter);
 
 //Connections
 const connect = async () => {
