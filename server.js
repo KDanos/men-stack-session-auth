@@ -3,6 +3,7 @@ import 'dotenv/config';
 import morgan from 'morgan';
 import methodOverride from 'method-override';
 import mongoose from 'mongoose';
+import session from 'express-session'
 
 import authRouter from './controllers/auth.js'
 
@@ -14,10 +15,17 @@ app.use(morgan('dev'));
 app.use(express.urlencoded());
 app.use(methodOverride('_method'));
 app.use(express.static('public'));
+app.use(session({
+    secret:process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized:true,
+}))
 
 //Routes
 app.get ('/', async (req, res) => {
-    res.render('index.ejs')
+    res.render('index.ejs',{
+        user:req.session.user,
+    })
 })
 
 
